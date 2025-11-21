@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Suellen Doykarin - Developer Portfolio
 
-## Getting Started
+A modern, responsive portfolio showcasing my skills and experience as a Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain technologies.
 
-First, run the development server:
+## Technologies Used
+
+- Next.js 15 (App Router)
+- React 19
+- TypeScript
+- TailwindCSS
+- Framer Motion (Animations)
+- next-themes (Dark/Light Mode)
+- Lucide React (Icons)
+- Shadcn UI Components
+- Vercel (Deployment)
+
+## Features
+
+- Fully responsive design
+- Dark/light mode toggle
+- Animated sections with Framer Motion
+- SEO optimized with proper meta tags
+- Accessibility focused (WCAG compliant)
+- Modern UI with clean aesthetics
+- Performance optimized
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/portfolio.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+## Environment Variables
+
+This project doesn't require any environment variables for basic functionality.
+
+## Deployment
+
+This project is designed for deployment on Vercel:
+
+1. Push your code to a GitHub repository
+2. Connect your repository to [Vercel](https://vercel.com)
+3. Vercel will automatically detect the Next.js project and deploy it
+
+Or deploy manually using the Vercel CLI:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm i -g vercel
+vercel
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+portfolio/
+├── app/                  # Next.js App Router pages
+│   ├── about/
+│   ├── contact/
+│   ├── experience/
+│   ├── projects/
+│   ├── skills/
+│   ├── globals.css      # Global styles
+│   └── layout.tsx       # Root layout
+├── components/          # Reusable React components
+│   ├── ui/             # Shadcn UI components
+│   ├── animated-section.tsx
+│   ├── container.tsx
+│   ├── footer.tsx
+│   ├── hero.tsx
+│   ├── navbar.tsx
+│   ├── skill-icon.tsx
+│   └── theme-provider.tsx
+├── lib/                # Utility functions
+│   └── utils.ts
+├── content/            # MDX content for case studies
+└── public/             # Static assets
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Accessibility Features
 
-## Learn More
+- Semantic HTML markup
+- Proper heading hierarchy
+- Sufficient color contrast
+- Keyboard navigation support
+- ARIA attributes where appropriate
+- Focus indicators
+- Screen reader friendly content
 
-To learn more about Next.js, take a look at the following resources:
+## Browser Support
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is open source and available under the [MIT License](LICENSE).
