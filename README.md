@@ -1,4 +1,4 @@
-# Suellen Doykarin - Developer Portfolio
+# Suellen Karin Oliveira Doy - Developer Portfolio
 
 A modern, responsive portfolio showcasing my skills and experience as a Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain technologies.
 
@@ -27,16 +27,19 @@ A modern, responsive portfolio showcasing my skills and experience as a Senior S
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/portfolio.git
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    ```

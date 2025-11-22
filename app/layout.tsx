@@ -4,20 +4,29 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import { Providers } from './providers';
+import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Suellen Doykarin - Senior Software Engineer",
-    template: "%s | Suellen Doykarin"
+    default: "Suellen Karin Oliveira Doy - Senior Software Engineer",
+    template: "%s | Suellen Karin Oliveira Doy",
   },
-  description: "Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain systems",
-  keywords: ["Software Engineer", "Java", "Kotlin", "Spring Boot", "Blockchain", "Corda", "Developer Portfolio"],
-  authors: [{ name: "Suellen Doykarin" }],
-  creator: "Suellen Doykarin",
-  publisher: "Suellen Doykarin",
+  description:
+    "Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain systems",
+  keywords: [
+    "Software Engineer",
+    "Java",
+    "Kotlin",
+    "Spring Boot",
+    "Blockchain",
+    "Corda",
+    "Developer Portfolio",
+  ],
+  authors: [{ name: "Suellen Karin Oliveira Doy" }],
+  creator: "Suellen Karin Oliveira Doy",
+  publisher: "Suellen Karin Oliveira Doy",
   formatDetection: {
     email: false,
     address: false,
@@ -27,14 +36,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://suellen-portfolio.vercel.app",
-    title: "Suellen Doykarin - Senior Software Engineer",
-    description: "Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain systems",
-    siteName: "Suellen Doykarin Portfolio",
+    title: "Suellen Karin Oliveira Doy - Senior Software Engineer",
+    description:
+      "Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain systems",
+    siteName: "Suellen Karin Oliveira Doy Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Suellen Doykarin - Senior Software Engineer",
-    description: "Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain systems",
+    title: "Suellen Karin Oliveira Doy - Senior Software Engineer",
+    description:
+      "Senior Software Engineer specializing in Java, Kotlin, Spring Boot, and blockchain systems",
   },
 };
 

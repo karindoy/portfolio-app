@@ -5,23 +5,24 @@ const Footer = () => {
     <footer className="border-t py-6">
       <div className="container flex flex-col items-center gap-4 md:flex-row md:justify-between">
         <div className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Suellen Doykarin. All rights reserved.
+          © {new Date().getFullYear()} Suellen Karin Oliveira Doy. All rights
+          reserved.
         </div>
         <div className="flex space-x-4">
-          <Link 
-            href="mailto:doykarin@gmail.com" 
+          <Link
+            href="mailto:doykarin@gmail.com"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Email
           </Link>
-          <Link 
-            href="#" 
+          <Link
+            href="#"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             LinkedIn
           </Link>
-          <Link 
-            href="#" 
+          <Link
+            href="#"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             GitHub

@@ -1,74 +1,86 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps, Variants } from "framer-motion";
+import React from "react";
 
-// Animation variants for different types of elements
-export const containerVariants = {
+// ----------------------------
+// Animation variants
+// ----------------------------
+
+export const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
-export const itemVariants = {
+export const itemVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
     transition: {
       duration: 0.5,
-      ease: "easeOut"
-    }
-  }
+      ease: "easeOut",
+    },
+  },
 };
 
-export const fadeInUp = {
+export const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 60 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { 
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  }
+    transition: {
+      duration: 0.2,
+      ease: "easeOut",
+    },
+  },
 };
 
-export const staggerContainer = {
+export const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.2,
-      delayChildren: 0.1
-    }
-  }
+      delayChildren: 0.1,
+    },
+  },
 };
 
+// ----------------------------
 // Reusable animated components
-type AnimatedProps = {
+// ----------------------------
+
+export type AnimatedProps = {
   children: React.ReactNode;
-  className?: string;
   delay?: number;
   duration?: number;
-} & React.HTMLAttributes<HTMLDivElement>;
+  variant?: Variants;
+  className?: string;
+} & HTMLMotionProps<"div">;
 
-export const AnimatedDiv = ({ 
-  children, 
-  className, 
+// ----------------------------
+// AnimatedDiv
+// ----------------------------
+export const AnimatedDiv: React.FC<AnimatedProps> = ({
+  children,
+  className,
   delay = 0,
-  duration = 0.5,
-  ...props 
-}: AnimatedProps) => {
+  duration = 0.2,
+  variant = fadeInUp,
+  ...props
+}) => {
   return (
     <motion.div
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
-      variants={fadeInUp}
+      variants={variant}
       transition={{ duration, delay }}
       className={className}
       {...props}
@@ -78,14 +90,18 @@ export const AnimatedDiv = ({
   );
 };
 
-export const AnimatedList = ({ 
-  children, 
-  className, 
-  ...props 
-}: AnimatedProps) => {
+// ----------------------------
+// AnimatedList
+// ----------------------------
+export const AnimatedList: React.FC<AnimatedProps> = ({
+  children,
+  className,
+  variant = containerVariants,
+  ...props
+}) => {
   return (
     <motion.div
-      variants={containerVariants}
+      variants={variant}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
@@ -97,15 +113,19 @@ export const AnimatedList = ({
   );
 };
 
-export const AnimatedListItem = ({ 
-  children, 
-  className, 
+// ----------------------------
+// AnimatedListItem
+// ----------------------------
+export const AnimatedListItem: React.FC<AnimatedProps> = ({
+  children,
+  className,
   delay = 0,
-  ...props 
-}: AnimatedProps) => {
+  variant = itemVariants,
+  ...props
+}) => {
   return (
     <motion.div
-      variants={itemVariants}
+      variants={variant}
       transition={{ delay }}
       className={className}
       {...props}

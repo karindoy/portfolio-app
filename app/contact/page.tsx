@@ -1,13 +1,20 @@
 import { Metadata } from "next";
 import { AnimatedSection } from "@/components/animated-section";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Mail, Phone, MapPin, Github, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Contact - Suellen Doykarin",
-  description: "Get in touch with Suellen Doykarin, Senior Software Engineer specializing in Java, Kotlin, and blockchain systems",
+  title: "Contact - Suellen Karin Oliveira Doy",
+  description:
+    "Get in touch with Suellen Karin Oliveira Doy, Senior Software Engineer specializing in Java, Kotlin, and blockchain systems",
 };
 
 const ContactPage = () => {
@@ -18,7 +25,7 @@ const ContactPage = () => {
       value: "doykarin@gmail.com",
       description: "Send me a direct message",
       action: "Open Email",
-      link: "mailto:doykarin@gmail.com"
+      link: "mailto:doykarin@gmail.com",
     },
     {
       icon: <Linkedin className="h-6 w-6" />,
@@ -26,7 +33,7 @@ const ContactPage = () => {
       value: "linkedin.com/in/suellen-doykarin",
       description: "Connect with me professionally",
       action: "View Profile",
-      link: "#"
+      link: "#",
     },
     {
       icon: <Github className="h-6 w-6" />,
@@ -34,8 +41,8 @@ const ContactPage = () => {
       value: "github.com/suellen-doykarin",
       description: "Check out my projects",
       action: "View Profile",
-      link: "#"
-    }
+      link: "#",
+    },
   ];
 
   return (
@@ -44,17 +51,14 @@ const ContactPage = () => {
         <AnimatedSection>
           <h1 className="text-4xl font-bold mb-4 text-center">Get In Touch</h1>
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-            I'm currently available for new opportunities. Feel free to reach out if you'd like to connect!
+            I'm currently available for new opportunities. Feel free to reach
+            out if you'd like to connect!
           </p>
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
           {contactMethods.map((method, index) => (
-            <AnimatedSection 
-              key={index} 
-              className="h-full"
-              delay={index * 0.1}
-            >
+            <AnimatedSection key={index} className="h-full" delay={index * 0.1}>
               <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-shadow">
                 <CardHeader>
                   <div className="flex items-center mb-3">
@@ -63,16 +67,14 @@ const ContactPage = () => {
                     </div>
                     <CardTitle>{method.title}</CardTitle>
                   </div>
-                  <CardDescription>
-                    {method.description}
-                  </CardDescription>
+                  <CardDescription>{method.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-foreground font-medium mb-4">{method.value}</p>
+                  <p className="text-foreground font-medium mb-4">
+                    {method.value}
+                  </p>
                   <Button asChild>
-                    <Link href={method.link}>
-                      {method.action}
-                    </Link>
+                    <Link href={method.link}>{method.action}</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -85,8 +87,9 @@ const ContactPage = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Let's Work Together</CardTitle>
               <CardDescription>
-                I'm currently available for freelance projects and full-time positions. 
-                Whether you have a question or just want to say hi, I'll try my best to get back to you!
+                I'm currently available for freelance projects and full-time
+                positions. Whether you have a question or just want to say hi,
+                I'll try my best to get back to you!
               </CardDescription>
             </CardHeader>
             <CardContent>

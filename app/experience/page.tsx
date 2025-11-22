@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Building2, Code, DollarSign } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Experience - Suellen Doykarin",
-  description: "Professional experience of Suellen Doykarin, Senior Software Engineer specializing in Java, Kotlin, and blockchain systems",
+  title: "Experience - Suellen Karin Oliveira Doy",
+  description:
+    "Professional experience of Suellen Karin Oliveira Doy, Senior Software Engineer specializing in Java, Kotlin, and blockchain systems",
 };
 
 const ExperiencePage = () => {
@@ -19,14 +20,14 @@ const ExperiencePage = () => {
         "Developing scalable financial systems with high transaction volumes",
         "Implementing microservices architecture for improved system resilience",
         "Working with Kotlin, Java, and Spring Boot in the banking domain",
-        "Focusing on security, compliance, and performance optimization"
+        "Focusing on security, compliance, and performance optimization",
       ],
       icon: <Building2 className="h-6 w-6" />,
       achievements: [
         "Improved system stability by eliminating recurring critical incidents",
         "Optimized performance for high-volume transaction processing",
-        "Implemented security enhancements for financial compliance"
-      ]
+        "Implemented security enhancements for financial compliance",
+      ],
     },
     {
       id: 2,
@@ -37,14 +38,14 @@ const ExperiencePage = () => {
         "Progressed through all levels from intern to senior engineer",
         "Designed backend architecture for blockchain solutions",
         "Developed APIs using Kotlin, Java, and Spring Boot",
-        "Worked on distributed systems and financial technology projects"
+        "Worked on distributed systems and financial technology projects",
       ],
       icon: <Code className="h-6 w-6" />,
       achievements: [
         "Led development of R$ 10M blockchain OTC exchange project",
         "Implemented Corda-based solutions for global blockchain project",
-        "Improved system performance and reliability through architecture improvements"
-      ]
+        "Improved system performance and reliability through architecture improvements",
+      ],
     },
     {
       id: 3,
@@ -55,22 +56,24 @@ const ExperiencePage = () => {
         "Developed systems for public health administration",
         "Created automated workflows to improve efficiency",
         "Implemented solutions that reduced processing time by 60%",
-        "Focused on accuracy and reliability for critical health data"
+        "Focused on accuracy and reliability for critical health data",
       ],
       icon: <DollarSign className="h-6 w-6" />,
       achievements: [
         "Reduced medical exam processing time by 60% through automation",
         "Improved data accuracy and system reliability",
-        "Enhanced user experience for public health workers"
-      ]
-    }
+        "Enhanced user experience for public health workers",
+      ],
+    },
   ];
 
   return (
     <div className="min-h-screen py-16">
       <div className="container mx-auto px-4">
         <AnimatedSection>
-          <h1 className="text-4xl font-bold mb-4 text-center">Professional Experience</h1>
+          <h1 className="text-4xl font-bold mb-4 text-center">
+            Professional Experience
+          </h1>
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
             A timeline of my professional journey and key accomplishments
           </p>
@@ -78,13 +81,13 @@ const ExperiencePage = () => {
 
         <div className="space-y-8">
           {experiences.map((exp, index) => (
-            <AnimatedSection 
-              key={exp.id} 
+            <AnimatedSection
+              key={exp.id}
               className="relative pl-8 border-l-2 border-border"
               delay={index * 0.1}
             >
               <div className="absolute -left-2.5 top-0 w-5 h-5 rounded-full bg-primary"></div>
-              
+
               <Card className="border-0 shadow-none hover:shadow-sm transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
@@ -95,7 +98,9 @@ const ExperiencePage = () => {
                         </div>
                         {exp.position}
                       </CardTitle>
-                      <h3 className="text-xl font-semibold mt-1">{exp.company}</h3>
+                      <h3 className="text-xl font-semibold mt-1">
+                        {exp.company}
+                      </h3>
                     </div>
                     <div className="flex items-center text-muted-foreground">
                       <Calendar className="h-4 w-4 mr-1" />
@@ -103,7 +108,7 @@ const ExperiencePage = () => {
                     </div>
                   </div>
                 </CardHeader>
-                
+
                 <CardContent>
                   <ul className="space-y-2 mb-4">
                     {exp.description.map((desc, idx) => (
@@ -113,9 +118,11 @@ const ExperiencePage = () => {
                       </li>
                     ))}
                   </ul>
-                  
+
                   <div className="mt-4">
-                    <h4 className="font-semibold text-lg mb-2">Key Achievements:</h4>
+                    <h4 className="font-semibold text-lg mb-2">
+                      Key Achievements:
+                    </h4>
                     <ul className="space-y-1">
                       {exp.achievements.map((achievement, idx) => (
                         <li key={idx} className="flex items-start">
