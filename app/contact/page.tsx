@@ -30,18 +30,18 @@ const ContactPage = () => {
     {
       icon: <Linkedin className="h-6 w-6" />,
       title: "LinkedIn",
-      value: "linkedin.com/in/suellen-doykarin",
+      value: "linkedin.com/in/doykarin",
       description: "Connect with me professionally",
       action: "View Profile",
-      link: "#",
+      link: "https://linkedin.com/in/doykarin",
     },
     {
       icon: <Github className="h-6 w-6" />,
       title: "GitHub",
-      value: "github.com/suellen-doykarin",
+      value: "github.com/karindoy",
       description: "Check out my projects",
       action: "View Profile",
-      link: "#",
+      link: "https://github.com/karindoy",
     },
   ];
 
@@ -51,8 +51,8 @@ const ContactPage = () => {
         <AnimatedSection>
           <h1 className="text-4xl font-bold mb-4 text-center">Get In Touch</h1>
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-            I'm currently available for new opportunities. Feel free to reach
-            out if you'd like to connect!
+            I&apos;m currently available for new opportunities. Feel free to
+            reach out if you&apos;d like to connect!
           </p>
         </AnimatedSection>
 
@@ -74,7 +74,13 @@ const ContactPage = () => {
                     {method.value}
                   </p>
                   <Button asChild>
-                    <Link href={method.link}>{method.action}</Link>
+                    {method.link.startsWith('http') ? (
+                      <Link href={method.link} target="_blank" rel="noopener noreferrer">
+                        {method.action}
+                      </Link>
+                    ) : (
+                      <Link href={method.link}>{method.action}</Link>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -85,11 +91,13 @@ const ContactPage = () => {
         <AnimatedSection delay={0.3} className="text-center max-w-2xl mx-auto">
           <Card className="border-0 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl">Let's Work Together</CardTitle>
+              <CardTitle className="text-2xl">
+                Let&apos;s Work Together
+              </CardTitle>
               <CardDescription>
-                I'm currently available for freelance projects and full-time
-                positions. Whether you have a question or just want to say hi,
-                I'll try my best to get back to you!
+                I&apos;m currently available for freelance projects and
+                full-time positions. Whether you have a question or just want to
+                say hi, I&apos;ll try my best to get back to you!
               </CardDescription>
             </CardHeader>
             <CardContent>

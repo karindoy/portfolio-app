@@ -1,12 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 
 type AnimatedSectionProps = {
   children: React.ReactNode;
   className?: string;
   delay?: number;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & Omit<HTMLMotionProps<"div">, "transition">;
+
+type AnimatedTitleProps = {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+} & Omit<HTMLMotionProps<"h2">, "transition">;
 
 export const AnimatedSection = ({
   children,
@@ -33,7 +39,7 @@ export const AnimatedTitle = ({
   className,
   delay = 0,
   ...props
-}: AnimatedSectionProps) => {
+}: AnimatedTitleProps) => {
   return (
     <motion.h2
       initial={{ opacity: 0, y: 20 }}
