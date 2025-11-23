@@ -140,7 +140,10 @@ const Navbar = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-background/95 backdrop-blur transition-opacity duration-200">
       {/* Navigation for desktop - right aligned */}
-      <nav className="hidden md:flex items-center gap-2">
+      <nav
+        className="hidden md:flex items-center gap-2 p-4 	
+ justify-center"
+      >
         {NAVIGATION_LINKS.map((link) => (
           <Link
             key={link.href}
