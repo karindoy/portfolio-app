@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { AnimatedSection } from "@/components/animated-section";
-import { Github, Linkedin, Download } from "lucide-react";
+import { FaGithub, FaLinkedin, FaFileDownload } from "react-icons/fa";
 
 const Hero = () => {
   return (
@@ -23,13 +23,13 @@ const Hero = () => {
           </p>
           <div className="flex justify-center space-x-4">
             <Button variant="ghost" size="icon" aria-label="GitHub">
-              <Github className="h-5 w-5" />
+              <FaGithub className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon" aria-label="LinkedIn">
-              <Linkedin className="h-5 w-5" />
+              <FaLinkedin className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon" aria-label="Download Resume">
-              <Download className="h-5 w-5" />
+              <FaFileDownload className="h-5 w-5" />
             </Button>
           </div>
         </AnimatedSection>

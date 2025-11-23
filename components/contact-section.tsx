@@ -6,9 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Mail, Phone, MapPin, Github, Linkedin } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const ContactSection = () => {
   const contactMethods = [
@@ -21,7 +22,7 @@ const ContactSection = () => {
       link: "mailto:doykarin@gmail.com",
     },
     {
-      icon: <Linkedin className="h-6 w-6" />,
+      icon: <FaLinkedin className="h-6 w-6" />,
       title: "LinkedIn",
       value: "linkedin.com/in/doykarin",
       description: "Connect with me professionally",
@@ -29,7 +30,7 @@ const ContactSection = () => {
       link: "https://linkedin.com/in/doykarin",
     },
     {
-      icon: <Github className="h-6 w-6" />,
+      icon: <FaGithub className="h-6 w-6" />,
       title: "GitHub",
       value: "github.com/karindoy",
       description: "Check out my projects",
@@ -67,8 +68,12 @@ const ContactSection = () => {
                     {method.value}
                   </p>
                   <Button asChild>
-                    {method.link.startsWith('http') ? (
-                      <Link href={method.link} target="_blank" rel="noopener noreferrer">
+                    {method.link.startsWith("http") ? (
+                      <Link
+                        href={method.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {method.action}
                       </Link>
                     ) : (
