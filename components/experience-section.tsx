@@ -7,7 +7,7 @@ const ExperienceSection = () => {
     {
       id: 1,
       company: "Act Digital @ C6 Bank",
-      position: "Software Engineer (Mid)",
+      position: "Software Engineer (Senior)",
       period: "May 2024 – Present",
       description: [
         "Developing scalable financial systems with high transaction volumes",
