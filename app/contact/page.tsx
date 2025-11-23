@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 const ContactPage = () => {
-  // Redirect to the home page with the #contact anchor
   redirect("/#contact");
 };
 

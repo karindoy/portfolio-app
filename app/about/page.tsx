@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 const AboutPage = () => {
-  // Redirect to the home page with the #about anchor
   redirect("/#about");
 };
 

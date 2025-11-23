@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 const SkillsPage = () => {
-  // Redirect to the home page with the #skills anchor
   redirect("/#skills");
 };
 

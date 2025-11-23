@@ -8,7 +8,6 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 
-// Define navigation links - if on home page, use anchor links, otherwise use page links
 const NAVIGATION_LINKS = [
   { name: "Home", href: "/", anchor: "#hero", id: "hero" },
   { name: "About", href: "/about", anchor: "#about", id: "about" },
@@ -30,11 +29,9 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
 
-  // Mark as mounted after component mounts to prevent SSR hydration mismatch
   useEffect(() => {
     setMounted(true);
 
-    // Set initial active section based on URL hash
     if (typeof window !== "undefined") {
       const hash = window.location.hash;
       if (hash) {
@@ -43,12 +40,10 @@ const Navbar = () => {
     }
   }, []);
 
-  // Handle scroll to update active section
   useEffect(() => {
-    if (pathname !== "/") return; // Only handle on home page
+    if (pathname !== "/") return;
 
     const handleScroll = () => {
-      // Find the section that is currently in view
       const sections = [
         "hero",
         "highlights",
@@ -58,10 +53,8 @@ const Navbar = () => {
         "experience",
         "contact",
       ];
-      // Use navbar height as offset (approximately 64px for h-16)
-      const scrollPosition = window.scrollY + 80; // Offset to account for navbar
+      const scrollPosition = window.scrollY + 80;
 
-      // Track the section that is closest to the top of the viewport
       let closestSection = null;
       let closestDistance = Infinity;
 
@@ -83,13 +76,10 @@ const Navbar = () => {
       }
     };
 
-    // Initial check
     handleScroll();
 
-    // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
 
-    // Cleanup
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -99,43 +89,33 @@ const Navbar = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
-  // Handle navigation based on current page and target
   const handleNavigation = (
     e: React.MouseEvent,
     href: string,
     anchor?: string
   ) => {
-    // If we're on the home page and the link has an anchor, scroll to the section
     if (pathname === "/" && anchor) {
       e.preventDefault();
-      const element = document.getElementById(anchor.substring(1)); // Remove the '#'
+      const element = document.getElementById(anchor.substring(1));
       if (element) {
         element.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
-        // Update the active section
         setActiveSection(anchor.substring(1));
-        // Close mobile menu if open
         if (mobileMenuOpen) {
           setMobileMenuOpen(false);
         }
       }
-    }
-    // For navigation to home page with an anchor from another page
-    else if (pathname !== "/" && anchor && href === "/") {
-      // Navigate to the home page with the anchor
+    } else if (pathname !== "/" && anchor && href === "/") {
       window.location.replace(href + anchor);
-      // Close mobile menu if open
       if (mobileMenuOpen) {
         setMobileMenuOpen(false);
       }
     }
-    // For other cases, the Link component will handle navigation normally
   };
 
-  // Use resolvedTheme to accurately determine the current theme
-  const currentTheme = mounted ? resolvedTheme : "light"; // Default to light on initial render
+  const currentTheme = mounted ? resolvedTheme : "light";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur transition-opacity duration-200">
@@ -156,7 +136,9 @@ const Navbar = () => {
               href={pathname === "/" && link.anchor ? link.anchor : link.href}
               onClick={(e) => handleNavigation(e, link.href, link.anchor)}
               className={`transition-colors block px-4 py-3 rounded-md text-sm font-medium ${
-                pathname === link.href ||
+                (pathname === link.href &&
+                  link.id === "hero" &&
+                  activeSection === "") ||
                 (pathname === "/" && activeSection === link.id) ||
                 (pathname !== "/" &&
                   typeof window !== "undefined" &&
@@ -187,7 +169,6 @@ const Navbar = () => {
                 <Moon className="h-5 w-5" />
               )
             ) : (
-              // Render either icon during SSR to prevent layout shift
               <Sun className="h-5 w-5 opacity-0" />
             )}
           </Button>
@@ -246,7 +227,9 @@ const Navbar = () => {
                   setMobileMenuOpen(false);
                 }}
                 className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === link.href ||
+                  (pathname === link.href &&
+                    link.id === "hero" &&
+                    activeSection === "") ||
                   (pathname === "/" && activeSection === link.id) ||
                   (pathname !== "/" &&
                     typeof window !== "undefined" &&

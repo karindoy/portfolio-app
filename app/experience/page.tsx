@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 const ExperiencePage = () => {
-  // Redirect to the home page with the #experience anchor
   redirect("/#experience");
 };
 
