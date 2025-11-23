@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const Hero = () => {
   return (
-    <section className="py-20 md:py-28">
+    <section id="hero" className="py-20 md:py-28">
       <div className="container mx-auto px-4 text-center">
         <AnimatedSection>
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
@@ -24,7 +24,16 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
             <Button size="lg" asChild>
-              <Link href="/#projects">
+              <Link href="#projects" onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById('projects');
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }
+              }}>
                 View Projects
                 <span className="sr-only">View Projects</span>
               </Link>

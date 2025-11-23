@@ -1,11 +1,11 @@
 "use client";
 
 import { AnimatedSection } from "@/components/animated-section";
-import { 
-  Code, 
-  Cpu, 
-  Blocks, 
-  DollarSign 
+import {
+  Code,
+  Cpu,
+  Blocks,
+  DollarSign
 } from "lucide-react";
 
 const Highlights = () => {
@@ -33,7 +33,7 @@ const Highlights = () => {
   ];
 
   return (
-    <section className="py-12 bg-muted/50 dark:bg-muted/10">
+    <section id="highlights" className="py-12 bg-muted/50 dark:bg-muted/10">
       <div className="container mx-auto px-4">
         <AnimatedSection className="mb-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Quick Highlights</h2>
@@ -43,8 +43,8 @@ const Highlights = () => {
         </AnimatedSection>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {highlights.map((highlight, index) => (
-            <AnimatedSection 
-              key={index} 
+            <AnimatedSection
+              key={index}
               className="bg-card p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow"
               delay={index * 0.1}
             >

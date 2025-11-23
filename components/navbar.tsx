@@ -2,85 +2,212 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 
+// Define navigation links - if on home page, use anchor links, otherwise use page links
+const NAVIGATION_LINKS = [
+  { name: "Home", href: "/", anchor: "#hero", id: "hero" },
+  { name: "About", href: "/about", anchor: "#about", id: "about" },
+  { name: "Skills", href: "/skills", anchor: "#skills", id: "skills" },
+  { name: "Projects", href: "/projects", anchor: "#projects", id: "projects" },
+  {
+    name: "Experience",
+    href: "/experience",
+    anchor: "#experience",
+    id: "experience",
+  },
+  { name: "Contact", href: "/contact", anchor: "#contact", id: "contact" },
+];
+
 const Navbar = () => {
   const pathname = usePathname();
-  const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
-  // Schedule the mount state update asynchronously
+  // Mark as mounted after component mounts to prevent SSR hydration mismatch
   useEffect(() => {
-    const handle = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(handle);
+    setMounted(true);
+
+    // Set initial active section based on URL hash
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash) {
+        setActiveSection(hash.substring(1));
+      }
+    }
   }, []);
 
-  const isDark = mounted && theme === "dark";
+  // Handle scroll to update active section
+  useEffect(() => {
+    if (pathname !== "/") return; // Only handle on home page
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Skills", href: "/skills" },
-    { name: "Projects", href: "/projects" },
-    { name: "Experience", href: "/experience" },
-    { name: "Contact", href: "/contact" },
-  ];
+    const handleScroll = () => {
+      // Find the section that is currently in view
+      const sections = [
+        "hero",
+        "highlights",
+        "about",
+        "skills",
+        "projects",
+        "experience",
+        "contact",
+      ];
+      // Use navbar height as offset (approximately 64px for h-16)
+      const scrollPosition = window.scrollY + 80; // Offset to account for navbar
 
-  const handleNavigation = (href: string) => {
-    if (pathname === href) {
-      // If already on the same page, refresh by navigating to the same route
-      router.refresh ? router.refresh() : router.replace(href);
-    } else {
-      router.push(href);
-    }
-    setMenuOpen(false);
+      // Track the section that is closest to the top of the viewport
+      let closestSection = null;
+      let closestDistance = Infinity;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop } = element;
+          const distance = Math.abs(offsetTop - scrollPosition);
+
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestSection = section;
+          }
+        }
+      }
+
+      if (closestSection) {
+        setActiveSection(closestSection);
+      }
+    };
+
+    // Initial check
+    handleScroll();
+
+    // Add scroll event listener
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname]);
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
+  // Handle navigation based on current page and target
+  const handleNavigation = (
+    e: React.MouseEvent,
+    href: string,
+    anchor?: string
+  ) => {
+    // If we're on the home page and the link has an anchor, scroll to the section
+    if (pathname === "/" && anchor) {
+      e.preventDefault();
+      const element = document.getElementById(anchor.substring(1)); // Remove the '#'
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        // Update the active section
+        setActiveSection(anchor.substring(1));
+        // Close mobile menu if open
+        if (mobileMenuOpen) {
+          setMobileMenuOpen(false);
+        }
+      }
+    }
+    // For navigation to home page with an anchor from another page
+    else if (pathname !== "/" && anchor && href === "/") {
+      // Navigate to the home page with the anchor
+      window.location.replace(href + anchor);
+      // Close mobile menu if open
+      if (mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    }
+    // For other cases, the Link component will handle navigation normally
+  };
+
+  // Use resolvedTheme to accurately determine the current theme
+  const currentTheme = mounted ? resolvedTheme : "light"; // Default to light on initial render
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur transition-opacity duration-200">
       <div className="container flex items-center h-16 px-4 justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl">SD</span>
+        <Link
+          href="/"
+          className="flex items-center space-x-2 text-xl font-bold text-foreground hover:text-foreground/80 transition-colors"
+        >
+          <span>SD</span>
         </Link>
 
-        {/* Desktop Links */}
-        <nav className="hidden md:flex items-center space-x-2 text-sm font-medium">
-          {navLinks.map((link) => (
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-1">
+          {NAVIGATION_LINKS.map((link) => (
             <Link
               key={link.href}
-              href={link.href}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavigation(link.href);
-              }}
-              className={`transition-colors hover:text-foreground/80 block px-4 py-2 rounded-md -mx-2 ${
-                pathname === link.href
-                  ? "text-foreground font-semibold"
-                  : "text-foreground/60"
+              href={pathname === "/" && link.anchor ? link.anchor : link.href}
+              onClick={(e) => handleNavigation(e, link.href, link.anchor)}
+              className={`transition-colors block px-4 py-3 rounded-md text-sm font-medium ${
+                pathname === link.href ||
+                (pathname === "/" && activeSection === link.id) ||
+                (pathname !== "/" &&
+                  typeof window !== "undefined" &&
+                  window.location.hash.substring(1) === link.id)
+                  ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
+                  : "text-foreground/70 hover:text-foreground hover:bg-muted"
               }`}
             >
               {link.name}
             </Link>
           ))}
+          {/* Theme Toggle Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label={
+              mounted && currentTheme === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"
+            }
+            className="ml-2"
+          >
+            {mounted ? (
+              currentTheme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )
+            ) : (
+              // Render either icon during SSR to prevent layout shift
+              <Sun className="h-5 w-5 opacity-0" />
+            )}
+          </Button>
         </nav>
 
-        {/* Right Controls */}
+        {/* Mobile menu button */}
         <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            aria-label="Toggle theme"
+            onClick={toggleTheme}
+            aria-label={
+              mounted && currentTheme === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"
+            }
+            className="md:hidden"
           >
             {mounted ? (
-              isDark ? (
+              currentTheme === "dark" ? (
                 <Sun className="h-5 w-5" />
               ) : (
                 <Moon className="h-5 w-5" />
@@ -90,15 +217,14 @@ const Navbar = () => {
             )}
           </Button>
 
-          {/* Mobile menu button */}
           <Button
             variant="ghost"
             size="icon"
             className="md:hidden"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
           >
-            {menuOpen ? (
+            {mobileMenuOpen ? (
               <X className="h-5 w-5" />
             ) : (
               <Menu className="h-5 w-5" />
@@ -107,23 +233,33 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <nav className="md:hidden flex flex-col space-y-2 px-4 pb-4">
-          {navLinks.map((link) => (
-            <button
-              key={link.href}
-              onClick={() => handleNavigation(link.href)}
-              className={`transition-colors hover:text-foreground/80 ${
-                pathname === link.href
-                  ? "text-foreground font-semibold"
-                  : "text-foreground/60"
-              }`}
-            >
-              {link.name}
-            </button>
-          ))}
-        </nav>
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {NAVIGATION_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={pathname === "/" && link.anchor ? link.anchor : link.href}
+                onClick={(e) => {
+                  handleNavigation(e, link.href, link.anchor);
+                  setMobileMenuOpen(false);
+                }}
+                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === link.href ||
+                  (pathname === "/" && activeSection === link.id) ||
+                  (pathname !== "/" &&
+                    typeof window !== "undefined" &&
+                    window.location.hash.substring(1) === link.id)
+                    ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
+                    : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+        </div>
       )}
     </header>
   );
