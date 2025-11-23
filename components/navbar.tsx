@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,6 @@ const Navbar = () => {
   const pathname = usePathname();
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
@@ -53,7 +52,10 @@ const Navbar = () => {
         "experience",
         "contact",
       ];
-      const scrollPosition = window.scrollY + 80;
+      // Get the navbar height to account for the fixed header in scroll position calculation
+      const navbarHeight =
+        document.querySelector("header")?.getBoundingClientRect().height || 64;
+      const scrollPosition = window.scrollY + navbarHeight; // No buffer to properly align with fixed navbar
 
       let closestSection = null;
       let closestDistance = Infinity;
@@ -61,11 +63,24 @@ const Navbar = () => {
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
-          const { offsetTop } = element;
-          const distance = Math.abs(offsetTop - scrollPosition);
+          const { offsetTop, offsetHeight } = element;
+          const top = offsetTop;
+          const bottom = offsetTop + offsetHeight;
 
-          if (distance < closestDistance) {
-            closestDistance = distance;
+          // Check if scroll position is within this section (with proper bounds checking)
+          if (scrollPosition >= top && scrollPosition < bottom) {
+            closestSection = section;
+            closestDistance = 0; // Exact match
+            break;
+          }
+
+          // Calculate distance to top and bottom of section for fallback
+          const distanceToTop = Math.abs(top - scrollPosition);
+          const distanceToBottom = Math.abs(bottom - scrollPosition);
+          const minDistance = Math.min(distanceToTop, distanceToBottom);
+
+          if (minDistance < closestDistance) {
+            closestDistance = minDistance;
             closestSection = section;
           }
         }
@@ -98,44 +113,93 @@ const Navbar = () => {
       e.preventDefault();
       const element = document.getElementById(anchor.substring(1));
       if (element) {
-        element.scrollIntoView({
+        // Get the navbar height to account for the fixed header
+        const navbarHeight =
+          document.querySelector("header")?.getBoundingClientRect().height ||
+          64;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition =
+          window.pageYOffset + elementPosition - navbarHeight;
+
+        // For better mobile compatibility, use a custom scroll with offset
+        window.scrollTo({
+          top: offsetPosition,
           behavior: "smooth",
-          block: "start",
         });
+
+        // Update active section
         setActiveSection(anchor.substring(1));
-        if (mobileMenuOpen) {
-          setMobileMenuOpen(false);
-        }
       }
     } else if (pathname !== "/" && anchor && href === "/") {
       window.location.replace(href + anchor);
-      if (mobileMenuOpen) {
-        setMobileMenuOpen(false);
-      }
     }
   };
 
   const currentTheme = mounted ? resolvedTheme : "light";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur transition-opacity duration-200">
-      <div className="container flex items-center h-16 px-4 justify-between">
-        {/* Logo */}
+    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-background/95 backdrop-blur transition-opacity duration-200">
+      {/* Navigation for desktop - right aligned */}
+      <nav className="hidden md:flex items-center gap-2">
+        {NAVIGATION_LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={pathname === "/" && link.anchor ? link.anchor : link.href}
+            onClick={(e) => handleNavigation(e, link.href, link.anchor)}
+            className={`transition-colors px-3 py-2 rounded-md text-sm font-medium ${
+              (pathname === link.href &&
+                link.id === "hero" &&
+                activeSection === "") ||
+              (pathname === "/" && activeSection === link.id) ||
+              (pathname !== "/" &&
+                typeof window !== "undefined" &&
+                window.location.hash.substring(1) === link.id)
+                ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
+                : "text-foreground/70 hover:text-foreground hover:bg-muted"
+            }`}
+          >
+            {link.name}
+          </Link>
+        ))}
+        {/* Theme Toggle Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          aria-label={
+            mounted && currentTheme === "dark"
+              ? "Switch to light mode"
+              : "Switch to dark mode"
+          }
+          className="ml-1"
+        >
+          {mounted ? (
+            currentTheme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )
+          ) : (
+            <Sun className="h-5 w-5 opacity-0" />
+          )}
+        </Button>
+      </nav>
+
+      {/* Mobile layout - centered */}
+      <div className="md:hidden container flex flex-col items-center px-4">
         <Link
           href="/"
-          className="flex items-center space-x-2 text-xl font-bold text-foreground hover:text-foreground/80 transition-colors"
+          className="flex items-center space-x-2 text-xl font-bold text-foreground hover:text-foreground/80 transition-colors my-2"
         >
-          <span>SD</span>
+          <span>Suellen Dev</span>
         </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1">
+        <nav className="flex flex-wrap justify-center items-center gap-2">
           {NAVIGATION_LINKS.map((link) => (
             <Link
               key={link.href}
               href={pathname === "/" && link.anchor ? link.anchor : link.href}
               onClick={(e) => handleNavigation(e, link.href, link.anchor)}
-              className={`transition-colors block px-4 py-3 rounded-md text-sm font-medium ${
+              className={`transition-colors px-4 py-2.5 rounded-md text-sm font-medium ${
                 (pathname === link.href &&
                   link.id === "hero" &&
                   activeSection === "") ||
@@ -160,7 +224,7 @@ const Navbar = () => {
                 ? "Switch to light mode"
                 : "Switch to dark mode"
             }
-            className="ml-2"
+            className="ml-1"
           >
             {mounted ? (
               currentTheme === "dark" ? (
@@ -173,77 +237,7 @@ const Navbar = () => {
             )}
           </Button>
         </nav>
-
-        {/* Mobile menu button */}
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            aria-label={
-              mounted && currentTheme === "dark"
-                ? "Switch to light mode"
-                : "Switch to dark mode"
-            }
-            className="md:hidden"
-          >
-            {mounted ? (
-              currentTheme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )
-            ) : (
-              <Sun className="h-5 w-5 opacity-0" />
-            )}
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {NAVIGATION_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={pathname === "/" && link.anchor ? link.anchor : link.href}
-                onClick={(e) => {
-                  handleNavigation(e, link.href, link.anchor);
-                  setMobileMenuOpen(false);
-                }}
-                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${
-                  (pathname === link.href &&
-                    link.id === "hero" &&
-                    activeSection === "") ||
-                  (pathname === "/" && activeSection === link.id) ||
-                  (pathname !== "/" &&
-                    typeof window !== "undefined" &&
-                    window.location.hash.substring(1) === link.id)
-                    ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
-                    : "text-foreground/70 hover:text-foreground hover:bg-muted"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
     </header>
   );
 };

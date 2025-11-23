@@ -21,9 +21,16 @@ export const ScrollManager = () => {
           const element = document.getElementById(elementId);
 
           if (element) {
-            element.scrollIntoView({
+            const navbarHeight =
+              document.querySelector("header")?.getBoundingClientRect()
+                .height || 64;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition =
+              window.pageYOffset + elementPosition - navbarHeight;
+
+            window.scrollTo({
+              top: offsetPosition,
               behavior: "smooth",
-              block: "start",
             });
           } else {
             window.scrollTo({ top: 0, behavior: "smooth" });

@@ -72,4 +72,24 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: ui-sans-serif, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* Fix for mobile viewport issues */
+  height: 100%;
+}
+
+/* Improve mobile scrolling behavior */
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+/* Fix for mobile browser address bar changes */
+@media screen and (max-width: 768px) {
+  html {
+    /* Use dynamic viewport units for mobile browsers */
+    height: -webkit-fill-available;
+  }
+
+  body {
+    height: -webkit-fill-available;
+  }
 }

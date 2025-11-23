@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { AnimatedSection } from "@/components/animated-section";
-import { Github, Linkedin, Mail, Download } from "lucide-react";
-import Link from "next/link";
+import { Github, Linkedin, Download } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -22,29 +21,6 @@ const Hero = () => {
             technologies with 7+ years of experience in financial systems and
             distributed architectures.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
-            <Button size="lg" asChild>
-              <Link href="#projects" onClick={(e) => {
-                e.preventDefault();
-                const element = document.getElementById('projects');
-                if (element) {
-                  element.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                  });
-                }
-              }}>
-                View Projects
-                <span className="sr-only">View Projects</span>
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link href="mailto:doykarin@gmail.com">
-                <Mail className="mr-2 h-4 w-4" />
-                Contact Me
-              </Link>
-            </Button>
-          </div>
           <div className="flex justify-center space-x-4">
             <Button variant="ghost" size="icon" aria-label="GitHub">
               <Github className="h-5 w-5" />
