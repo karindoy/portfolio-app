@@ -21,13 +21,19 @@ const Hero = () => {
             technologies with 7+ years of experience in financial systems and
             distributed architectures.
           </p>
-          <div className="flex justify-center space-x-4">
+          <div className="flex justify-center space-x-12">
             <a
               href="https://github.com/karindoy"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button variant="ghost" size="icon" aria-label="GitHub">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="GitHub"
+                className="transform"
+                style={{ transform: "scale(2)", transformOrigin: "center" }}
+              >
                 <FaGithub className="h-5 w-5" />
               </Button>
             </a>
@@ -36,11 +42,23 @@ const Hero = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button variant="ghost" size="icon" aria-label="LinkedIn">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="LinkedIn"
+                className="transform"
+                style={{ transform: "scale(2)", transformOrigin: "center" }}
+              >
                 <FaLinkedin className="h-5 w-5" />
               </Button>
             </a>
-            <Button variant="ghost" size="icon" aria-label="Download Resume">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Download Resume"
+              className="transform"
+              style={{ transform: "scale(2)", transformOrigin: "center" }}
+            >
               <FaFileDownload className="h-5 w-5" />
             </Button>
           </div>

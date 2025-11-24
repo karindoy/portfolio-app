@@ -18,7 +18,7 @@ const ContactSection = () => {
       title: "Email",
       value: "doykarin@gmail.com",
       description: "Send me a direct message",
-      action: "Open Email",
+      action: "Send Email",
       link: "mailto:doykarin@gmail.com",
     },
     {
@@ -98,14 +98,6 @@ const ContactSection = () => {
                 say hi, I&apos;ll try my best to get back to you!
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button size="lg" asChild>
-                <Link href="mailto:doykarin@gmail.com">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Send Email
-                </Link>
-              </Button>
-            </CardContent>
           </Card>
         </AnimatedSection>
       </div>
