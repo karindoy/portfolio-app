@@ -22,12 +22,24 @@ const Hero = () => {
             distributed architectures.
           </p>
           <div className="flex justify-center space-x-4">
-            <Button variant="ghost" size="icon" aria-label="GitHub">
-              <FaGithub className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" aria-label="LinkedIn">
-              <FaLinkedin className="h-5 w-5" />
-            </Button>
+            <a
+              href="https://github.com/karindoy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="ghost" size="icon" aria-label="GitHub">
+                <FaGithub className="h-5 w-5" />
+              </Button>
+            </a>
+            <a
+              href="https://linkedin.com/in/doykarin"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="ghost" size="icon" aria-label="LinkedIn">
+                <FaLinkedin className="h-5 w-5" />
+              </Button>
+            </a>
             <Button variant="ghost" size="icon" aria-label="Download Resume">
               <FaFileDownload className="h-5 w-5" />
             </Button>

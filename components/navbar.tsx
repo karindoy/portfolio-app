@@ -139,11 +139,54 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full border-b bg-background/95 backdrop-blur transition-opacity duration-200">
-      {/* Navigation for desktop - right aligned */}
-      <nav
-        className="hidden md:flex items-center gap-2 p-4 	
- justify-center"
-      >
+      {/* Mobile navigation - shown only on small screens */}
+      <nav className="flex md:hidden flex-wrap justify-center items-center gap-2 p-4">
+        {NAVIGATION_LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={pathname === "/" && link.anchor ? link.anchor : link.href}
+            onClick={(e) => handleNavigation(e, link.href, link.anchor)}
+            className={`transition-colors px-4 py-2.5 rounded-md text-sm font-medium ${
+              (pathname === link.href &&
+                link.id === "hero" &&
+                activeSection === "") ||
+              (pathname === "/" && activeSection === link.id) ||
+              (pathname !== "/" &&
+                typeof window !== "undefined" &&
+                window.location.hash.substring(1) === link.id)
+                ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
+                : "text-foreground/70 hover:text-foreground hover:bg-muted"
+            }`}
+          >
+            {link.name}
+          </Link>
+        ))}
+        {/* Theme Toggle Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          aria-label={
+            mounted && currentTheme === "dark"
+              ? "Switch to light mode"
+              : "Switch to dark mode"
+          }
+          className="ml-1"
+        >
+          {mounted ? (
+            currentTheme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )
+          ) : (
+            <Sun className="h-5 w-5 opacity-0" />
+          )}
+        </Button>
+      </nav>
+
+      {/* Desktop navigation - shown only on medium screens and larger */}
+      <nav className="hidden md:flex justify-center items-center gap-2 p-4">
         {NAVIGATION_LINKS.map((link) => (
           <Link
             key={link.href}
@@ -187,60 +230,6 @@ const Navbar = () => {
           )}
         </Button>
       </nav>
-
-      {/* Mobile layout - centered */}
-      <div className="md:hidden container flex flex-col items-center px-4">
-        <Link
-          href="/"
-          className="flex items-center space-x-2 text-xl font-bold text-foreground hover:text-foreground/80 transition-colors my-2"
-        >
-          <span>Suellen Dev</span>
-        </Link>
-        <nav className="flex flex-wrap justify-center items-center gap-2">
-          {NAVIGATION_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={pathname === "/" && link.anchor ? link.anchor : link.href}
-              onClick={(e) => handleNavigation(e, link.href, link.anchor)}
-              className={`transition-colors px-4 py-2.5 rounded-md text-sm font-medium ${
-                (pathname === link.href &&
-                  link.id === "hero" &&
-                  activeSection === "") ||
-                (pathname === "/" && activeSection === link.id) ||
-                (pathname !== "/" &&
-                  typeof window !== "undefined" &&
-                  window.location.hash.substring(1) === link.id)
-                  ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
-                  : "text-foreground/70 hover:text-foreground hover:bg-muted"
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-          {/* Theme Toggle Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            aria-label={
-              mounted && currentTheme === "dark"
-                ? "Switch to light mode"
-                : "Switch to dark mode"
-            }
-            className="ml-1"
-          >
-            {mounted ? (
-              currentTheme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )
-            ) : (
-              <Sun className="h-5 w-5 opacity-0" />
-            )}
-          </Button>
-        </nav>
-      </div>
     </header>
   );
 };
