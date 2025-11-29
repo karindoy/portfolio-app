@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
              if (isBullet && i === 0) {
               const bulletX = marginLeft + baseIndent + 4;
-              const bulletY = y + fontSize / 2 - 1; 
+              const bulletY = y + fontSize / 2 - 1;
               const rx = 2;
               const ry = 2;
               page.drawEllipse({ x: bulletX, y: bulletY, xScale: rx, yScale: ry, color: rgb(0, 0, 0) });
@@ -101,8 +101,9 @@ export async function POST(request: NextRequest) {
       }
 
       const pdfBytes = await pdfDoc.save();
+      const pdfBlob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
 
-      return new Response(pdfBytes, {
+      return new Response(pdfBlob, {
         status: 200,
         headers: {
           'Content-Type': 'application/pdf',
