@@ -6,7 +6,7 @@ import path from 'path';
 
 export async function POST(request: NextRequest) {
   try {
-    const { format, source, resumeData }: GenerateResumeRequest = await request.json();
+    const { format, source }: GenerateResumeRequest = await request.json();
     const markdownPath = path.join(process.cwd(), 'public', 'resume.md');
     const resumeService = new ResumeService();
 
@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
     if (format === 'pdf' && source === 'markdown') {
       const content = await fs.readFile(markdownPath, 'utf-8');
       const pdfBuffer = await resumeService.generatePdfFromMarkdown(content);
-      const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+      const uint8Array = new Uint8Array(pdfBuffer);
+      const pdfBlob = new Blob([uint8Array], { type: 'application/pdf' });
 
       return new Response(pdfBlob, {
         status: 200,
