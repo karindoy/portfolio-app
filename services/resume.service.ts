@@ -183,25 +183,31 @@ export class ResumeService {
       if (raw.startsWith('# ')) {
         elements.push({ text: raw.slice(2).trim(), type: 'header1' });
         i++; continue;
-      } else if (raw.startsWith('## ')) {
+      }
+
+      if (raw.startsWith('## ')) {
         elements.push({ text: raw.slice(3).trim(), type: 'header2' });
         i++; continue;
-      } else if (raw.startsWith('### ')) {
+      } 
+
+      if (raw.startsWith('### ')) {
         elements.push({ text: raw.slice(4).trim(), type: 'header3' });
         i++; continue;
-      } else if (raw.startsWith('#### ')) {
+      } 
+
+      if (raw.startsWith('#### ')) {
         elements.push({ text: raw.slice(5).trim(), type: 'header4' });
         i++; continue;
-      } else if (/^\s*[-*+]\s/.test(raw)) {
-        // collect contiguous list items
-        const items: string[] = [];
+      }
+      if (/^\s*[-*+]\s/.test(raw)) {
         while (i < lines.length && /^\s*[-*+]\s/.test(lines[i])) {
+          console.log('Found list item:', lines[i]);
           // convert markdown bullets to ASCII star '*' which we'll render as drawn bullets
           const cleaned = lines[i].replace(/^\s*[-*+]\s/, '* ').trimEnd();
-          items.push(cleaned);
+          console.log('Cleaned list item:', cleaned);
+          elements.push({ text: cleaned, type: 'list_item' });
           i++;
         }
-        elements.push({ text: items.join('\n'), type: 'list_item' });
         continue;
       } else {
         // paragraph (may be empty)

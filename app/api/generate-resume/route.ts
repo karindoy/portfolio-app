@@ -21,32 +21,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    if (format === 'pdf' && source === 'data' && resumeData) {
-      const pdfBuffer = await resumeService.generatePDF(resumeData);
-      const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
-
-      return new Response(pdfBlob, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': 'attachment; filename="suellen-karin-doy-resume.pdf"',
-        },
-      });
-    }
-
-    if (format === 'markdown' && source === 'data' && resumeData) {
-      const markdownContent = await resumeService.generateMarkdown(resumeData);
-
-      return new Response(markdownContent, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/markdown',
-          'Content-Disposition': 'attachment; filename="suellen-karin-doy-resume.md"',
-        },
-      });
-    }
-
-    // Original markdown-to-pdf functionality
     if (format === 'pdf' && source === 'markdown') {
       const content = await fs.readFile(markdownPath, 'utf-8');
       const pdfBuffer = await resumeService.generatePdfFromMarkdown(content);
