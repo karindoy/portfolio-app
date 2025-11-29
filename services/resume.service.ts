@@ -144,8 +144,29 @@ export class ResumeService {
         }
       }
 
-      if (el.type === 'header1') y -= 8;
-      if (el.type === 'header2') y -= 6;
+      if (el.type === 'header1') {
+        y -= 8;
+        // Add divider after header1
+        const dividerY = y + 4;
+        page.drawLine({
+          start: { x: marginLeft, y: dividerY },
+          end: { x: page.getWidth() - marginRight, y: dividerY },
+          thickness: 1,
+          color: rgb(0.5, 0.5, 0.5),
+        });
+        y -= 8; // Additional spacing after divider
+      } else if (el.type === 'header2') {
+        y -= 6;
+        // Add divider after header2
+        const dividerY = y + 3;
+        page.drawLine({
+          start: { x: marginLeft, y: dividerY },
+          end: { x: page.getWidth() - marginRight, y: dividerY },
+          thickness: 0.5,
+          color: rgb(0.7, 0.7, 0.7),
+        });
+        y -= 6; // Additional spacing after divider
+      }
 
       if (y < 80) {
         page = pdfDoc.addPage([pageWidth, pageHeight]);
@@ -188,19 +209,19 @@ export class ResumeService {
       if (raw.startsWith('## ')) {
         elements.push({ text: raw.slice(3).trim(), type: 'header2' });
         i++; continue;
-      } 
+      }
 
       if (raw.startsWith('### ')) {
         elements.push({ text: raw.slice(4).trim(), type: 'header3' });
         i++; continue;
-      } 
+      }
 
       if (raw.startsWith('#### ')) {
         elements.push({ text: raw.slice(5).trim(), type: 'header4' });
         i++; continue;
       }
       if (/^\s*[-*+]\s/.test(raw)) {
-        while (i < lines.length && /^\s*[-*+]\s/.test(lines[i])) {
+                while (i < lines.length && /^\s*[-*+]\s/.test(lines[i])) {
           console.log('Found list item:', lines[i]);
           // convert markdown bullets to ASCII star '*' which we'll render as drawn bullets
           const cleaned = lines[i].replace(/^\s*[-*+]\s/, '* ').trimEnd();
