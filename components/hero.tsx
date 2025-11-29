@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { AnimatedSection } from "@/components/animated-section";
 import { FaGithub, FaLinkedin, FaFileDownload } from "react-icons/fa";
+import { downloadPDFResume } from "@/lib/resume-download";
 
 const Hero = () => {
   return (
@@ -58,6 +59,10 @@ const Hero = () => {
               aria-label="Download Resume"
               className="transform"
               style={{ transform: "scale(2)", transformOrigin: "center" }}
+              onClick={(e) => {
+                e.preventDefault();
+                downloadPDFResume();
+              }}
             >
               <FaFileDownload className="h-5 w-5" />
             </Button>
