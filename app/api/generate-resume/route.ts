@@ -8,7 +8,6 @@ export async function POST(request: NextRequest) {
     const { format, source } = await request.json();
     const markdownPath = path.join(process.cwd(), 'public', 'resume.md');
 
-    // Return raw markdown if requested
     if (format === 'markdown') {
       const markdownContent = await fs.readFile(markdownPath, 'utf-8');
       return new Response(markdownContent, {
@@ -20,17 +19,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Generate PDF from markdown
     if (format === 'pdf' && source === 'markdown') {
       const content = await fs.readFile(markdownPath, 'utf-8');
-
       const pdfDoc = await PDFDocument.create();
 
-      // Built-in Helvetica fonts (no fontkit)
       const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      // Page setup
       const pageWidth = 600;
       const pageHeight = 800;
       const marginLeft = 50;
@@ -38,10 +33,9 @@ export async function POST(request: NextRequest) {
       const usableWidth = pageWidth - marginLeft - marginRight;
 
       let page = pdfDoc.addPage([pageWidth, pageHeight]);
-      let y = pageHeight - 50; // top margin
-      const lineGap = 4; // extra space between lines
+      let y = pageHeight - 50;
+      const lineGap = 4;
 
-      // Parse markdown to structured elements
       const elements = parseMarkdown(content);
 
       for (const el of elements) {
@@ -49,12 +43,11 @@ export async function POST(request: NextRequest) {
         const font = getFontForType(el.type, helvetica, helveticaBold);
         const lineHeight = Math.ceil(fontSize + lineGap);
 
-        // If element is multi-line (list_item joined with \n), split and handle bullets
         const rawLines = el.text.split('\n');
 
         for (const rawLine of rawLines) {
           if (!rawLine || rawLine.trim() === '') {
-            y -= lineHeight; // paragraph gap
+            y -= lineHeight;
             if (y < 60) {
               page = pdfDoc.addPage([pageWidth, pageHeight]);
               y = pageHeight - 50;
@@ -62,37 +55,29 @@ export async function POST(request: NextRequest) {
             continue;
           }
 
-          // Detect bullet (we converted bullets to '* ' in parser)
           const isBullet = rawLine.trim().startsWith('* ');
           const baseText = isBullet ? rawLine.trim().substring(2) : rawLine.trim();
 
-          // For wrapping we must consider reduced width when there's an indent
-          const baseIndent = getIndentForType(el.type); // base left offset
-          const bulletIndentExtra = isBullet ? 12 : 0; // space reserved for bullet
+          const baseIndent = getIndentForType(el.type);
+          const bulletIndentExtra = isBullet ? 12 : 0;
           const textX = marginLeft + baseIndent + bulletIndentExtra;
           const availableWidth = usableWidth - baseIndent - bulletIndentExtra;
 
-          // Wrap the text into lines that fit availableWidth
           const wrappedLines = wrapText(baseText, font, fontSize, availableWidth);
 
-          // Draw wrapped lines: first line includes bullet as drawn circle,
-          // subsequent lines are drawn shifted to align with text (no bullet)
           for (let i = 0; i < wrappedLines.length; i++) {
-            if (y < 60) { // bottom margin -> new page
+            if (y < 60) {
               page = pdfDoc.addPage([pageWidth, pageHeight]);
               y = pageHeight - 50;
             }
 
-            if (isBullet && i === 0) {
-              // draw small filled circle (bullet) left of the text
-              const bulletX = marginLeft + baseIndent + 4; // position slightly right of margin
-              const bulletY = y + fontSize / 2 - 1; // center bullet vertically relative to text
-              const rx = 2; // radius x
-              const ry = 2; // radius y
+             if (isBullet && i === 0) {
+              const bulletX = marginLeft + baseIndent + 4;
+              const bulletY = y + fontSize / 2 - 1; 
+              const rx = 2;
+              const ry = 2;
               page.drawEllipse({ x: bulletX, y: bulletY, xScale: rx, yScale: ry, color: rgb(0, 0, 0) });
             }
-
-            // draw text (without any '*' marker)
             page.drawText(wrappedLines[i], {
               x: textX,
               y,
@@ -106,11 +91,9 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Add extra spacing after headers
         if (el.type === 'header1') y -= 8;
         if (el.type === 'header2') y -= 6;
 
-        // If near bottom, add a page
         if (y < 80) {
           page = pdfDoc.addPage([pageWidth, pageHeight]);
           y = pageHeight - 50;
@@ -155,10 +138,8 @@ function wrapText(text: string, font: PDFFont, fontSize: number, maxWidth: numbe
       current = test;
     } else {
       if (current) lines.push(current);
-      // if single word wider than maxWidth, force-break word (rare)
       if (font.widthOfTextAtSize(w, fontSize) > maxWidth) {
-        // break word into characters
-        let buf = '';
+       let buf = '';
         for (const ch of w) {
           const t = buf + ch;
           if (font.widthOfTextAtSize(t, fontSize) <= maxWidth) {
@@ -230,7 +211,7 @@ function parseMarkdown(content: string) {
       elements.push({ text: raw.trim(), type: 'paragraph' });
       i++; continue;
     }
-  }
+    }
 
   // Clean markdown inline markers but keep ASCII bullets and basic punctuation.
   for (const e of elements) {
