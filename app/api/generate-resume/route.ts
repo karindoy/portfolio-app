@@ -1,90 +1,15 @@
 import { NextRequest } from 'next/server';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, PDFFont } from 'pdf-lib';
 import fs from 'fs/promises';
 import path from 'path';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { format, source } = body;
+    const { format, source } = await request.json();
 
-    if (format === 'pdf') {
-      if (source === 'markdown') {
-        // Read the markdown file content
-        const markdownPath = path.join(process.cwd(), 'public', 'resume.md');
-        const content = await fs.readFile(markdownPath, 'utf-8');
+    const markdownPath = path.join(process.cwd(), 'public', 'resume.md');
 
-        // Create a new PDF document
-        const pdfDoc = await PDFDocument.create();
-
-        // Embed fonts for different text styles
-        const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-        const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-        // Add a page
-        let page = pdfDoc.addPage([600, 800]); // [width, height] in points
-
-        let yPosition = 750;
-        const lineHeight = 15;
-
-        for (const element of parseMarkdown(content)) {
-          // If we reach the bottom of the page, add a new page
-          if (yPosition < 50) {
-            page = pdfDoc.addPage([600, 800]);
-            yPosition = 750;
-          }
-
-          const { text, type } = element;
-          const lines = text.split('\n');
-
-          for (const line of lines) {
-            if (line.trim() === '') continue;
-
-            // Break long lines into multiple lines
-            const wrappedLines = wrapText(line.trim(), getFontForType(type, regularFont, boldFont), getFontSizeForType(type), 500); // Max width of 500 units
-
-            for (const wrappedLine of wrappedLines) {
-              if (yPosition < 50) {
-                page = pdfDoc.addPage([600, 800]);
-                yPosition = 750;
-              }
-
-              let fontSize = getFontSizeForType(type);
-              let font = getFontForType(type, regularFont, boldFont);
-
-              page.drawText(wrappedLine, {
-                x: getIndentForType(type),
-                y: yPosition,
-                size: fontSize,
-                font: font,
-                color: rgb(0, 0, 0),
-              });
-
-              yPosition -= lineHeight;
-            }
-          }
-
-          // Add extra space after major sections
-          if (type === 'header1' || type === 'header2') {
-            yPosition -= 10;
-          }
-        }
-
-        // Serialize the PDF to bytes
-        const pdfBytes = await pdfDoc.save();
-
-        // Return the PDF as a response
-        return new Response(pdfBytes, {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': 'attachment; filename="suellen-karin-doy-resume-md.pdf"',
-          },
-        });
-      }
-    } else if (format === 'markdown') {
-      // Return the markdown file content
-      const markdownPath = path.join(process.cwd(), 'public', 'resume.md');
+    if (format === 'markdown') {
       const markdownContent = await fs.readFile(markdownPath, 'utf-8');
 
       return new Response(markdownContent, {
@@ -96,79 +21,121 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // If we reach here, it means the request was invalid
-    return new Response(
-      JSON.stringify({ error: 'Invalid format or source parameter' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
+    if (format === 'pdf' && source === 'markdown') {
+      const content = await fs.readFile(markdownPath, 'utf-8');
+
+      const pdfDoc = await PDFDocument.create();
+      const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      let page = pdfDoc.addPage([600, 800]);
+      let yPosition = 750;
+      const lineHeight = 15;
+
+      for (const element of parseMarkdown(content)) {
+        const { text, type } = element;
+
+        if (yPosition < 60) {
+          page = pdfDoc.addPage([600, 800]);
+          yPosition = 750;
+        }
+
+        const fontSize = getFontSizeForType(type);
+        const font = getFontForType(type, fontRegular, fontBold);
+        const maxWidth = 500;
+
+        const rawLines = text.split('\n');
+
+        for (const rawLine of rawLines) {
+          if (!rawLine.trim()) continue;
+
+          const wrapped = wrapText(rawLine, font, fontSize, maxWidth);
+
+          for (const w of wrapped) {
+            if (yPosition < 60) {
+              page = pdfDoc.addPage([600, 800]);
+              yPosition = 750;
+            }
+
+            page.drawText(w, {
+              x: getIndentForType(type),
+              y: yPosition,
+              size: fontSize,
+              font,
+              color: rgb(0, 0, 0),
+            });
+
+            yPosition -= lineHeight;
+          }
+        }
+
+        if (['header1', 'header2'].includes(type)) {
+          yPosition -= 10;
+        }
+      }
+
+      const pdfBytes = await pdfDoc.save();
+
+      return new Response(pdfBytes, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': 'attachment; filename="suellen-karin-doy-resume-md.pdf"',
+        },
+      });
+    }
+
+    return new Response(JSON.stringify({ error: 'Invalid parameters' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Error generating resume:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to generate resume' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: 'Failed to generate resume' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
 
-// Helper function to wrap text into multiple lines
-function wrapText(text: string, font: any, fontSize: number, maxWidth: number): string[] {
+/* ------------------------- Helpers ------------------------- */
+
+function wrapText(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
   const words = text.split(' ');
   const lines: string[] = [];
-  let currentLine = '';
+  let line = '';
 
-  for (const word of words) {
-    const testLine = currentLine ? `${currentLine} ${word}` : word;
-    const testWidth = font.widthOfTextAtSize(testLine, fontSize);
-
-    if (testWidth > maxWidth && currentLine !== '') {
-      lines.push(currentLine);
-      currentLine = word;
+  for (const w of words) {
+    const test = line ? `${line} ${w}` : w;
+    if (font.widthOfTextAtSize(test, fontSize) > maxWidth && line) {
+      lines.push(line);
+      line = w;
     } else {
-      currentLine = testLine;
+      line = test;
     }
   }
 
-  if (currentLine !== '') {
-    lines.push(currentLine);
-  }
-
+  if (line) lines.push(line);
   return lines;
 }
 
-// Helper function to get font size based on element type
 function getFontSizeForType(type: string): number {
-  switch (type) {
-    case 'header1':
-      return 16;
-    case 'header2':
-      return 14;
-    case 'header3':
-      return 12;
-    case 'header4':
-    case 'header5':
-    case 'header6':
-      return 11;
-    default:
-      return 11;
-  }
+  return {
+    header1: 16,
+    header2: 14,
+    header3: 12,
+    header4: 11,
+    header5: 11,
+    header6: 11,
+  }[type] ?? 11;
 }
 
-// Helper function to get font based on element type
-function getFontForType(type: string, regularFont: any, boldFont: any) {
-  switch (type) {
-    case 'header1':
-    case 'header2':
-    case 'header3':
-    case 'header4':
-    case 'header5':
-    case 'header6':
-      return boldFont;
-    default:
-      return regularFont;
-  }
+function getFontForType(type: string, regular: PDFFont, bold: PDFFont): PDFFont {
+  return ['header1', 'header2', 'header3', 'header4', 'header5', 'header6'].includes(type)
+    ? bold
+    : regular;
 }
 
-// Helper function to parse markdown into structured elements
 function parseMarkdown(content: string) {
   const elements: { text: string; type: string }[] = [];
   const lines = content.split('\n');
@@ -177,79 +144,62 @@ function parseMarkdown(content: string) {
   while (i < lines.length) {
     const line = lines[i];
 
-    if (line.startsWith('# ')) {
-      // H1 header
-      elements.push({ text: line.substring(2), type: 'header1' });
-    } else if (line.startsWith('## ')) {
-      // H2 header
-      elements.push({ text: line.substring(3), type: 'header2' });
-    } else if (line.startsWith('### ')) {
-      // H3 header
-      elements.push({ text: line.substring(4), type: 'header3' });
-    } else if (line.startsWith('#### ')) {
-      // H4 header
-      elements.push({ text: line.substring(5), type: 'header4' });
-    } else if (line.startsWith('##### ')) {
-      // H5 header
-      elements.push({ text: line.substring(6), type: 'header5' });
-    } else if (line.startsWith('###### ')) {
-      // H6 header
-      elements.push({ text: line.substring(7), type: 'header6' });
-    } else if (line.trim().startsWith('- ') || line.trim().startsWith('* ') || line.trim().startsWith('+ ')) {
-      // List item
-      const listItems = [];
-      while (i < lines.length && (lines[i].trim().startsWith('- ') || lines[i].trim().startsWith('* ') || lines[i].trim().startsWith('+ '))) {
-        listItems.push(lines[i].replace(/^- |^\* |^\+ /, '• ')); // Replace with bullet point
+    if (line.startsWith('# ')) elements.push({ text: line.slice(2), type: 'header1' });
+    else if (line.startsWith('## ')) elements.push({ text: line.slice(3), type: 'header2' });
+    else if (line.startsWith('### ')) elements.push({ text: line.slice(4), type: 'header3' });
+    else if (line.startsWith('#### ')) elements.push({ text: line.slice(5), type: 'header4' });
+    else if (line.startsWith('##### ')) elements.push({ text: line.slice(6), type: 'header5' });
+    else if (line.startsWith('###### ')) elements.push({ text: line.slice(7), type: 'header6' });
+
+    else if (/^\s*[-*+]\s/.test(line)) {
+      const list = [];
+      while (i < lines.length && /^\s*[-*+]\s/.test(lines[i])) {
+        list.push(lines[i].replace(/^\s*[-*+]\s/, '• '));
         i++;
       }
-      i--; // Adjust for the loop increment
-      elements.push({ text: listItems.join('\n'), type: 'list_item' });
-    } else {
-      // Regular paragraph
-      elements.push({ text: line, type: 'paragraph' });
+      i--;
+      elements.push({ text: list.join('\n'), type: 'list_item' });
+    }
+
+    else {
+      elements.push({ text: line.trim(), type: 'paragraph' });
     }
 
     i++;
   }
 
-  // Clean up special characters, bold, italic, link markers, and underscores
-  for (const element of elements) {
-    element.text = element.text
-      .replace(/→/g, '->')  // Replace arrow symbol with text equivalent
-      .replace(/_/g, '')    // Remove underscores
-      .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove bold markers
-      .replace(/\*(.*?)\*/g, '$1')      // Remove italic markers
-      .replace(/\[(.*?)\]\(.*?\)/g, '$1')  // Remove link brackets and URLs
-      .replace(/[^\x00-\x7F]/g, function(match) {  // Replace non-ASCII characters
-        const replacements: { [key: string]: string } = {
-          'ç': 'c', 'ã': 'a', 'õ': 'o', 'á': 'a', 'à': 'a', 'â': 'a', 'é': 'e', 'ê': 'e', 'í': 'i',
-          'ó': 'o', 'ô': 'o', 'ú': 'u', 'ü': 'u', 'ñ': 'n', 'ç': 'c', 'Ç': 'C', 'Ã': 'A', 'Õ': 'O',
-          'Á': 'A', 'À': 'A', 'Â': 'A', 'É': 'E', 'Ê': 'E', 'Í': 'I', 'Ó': 'O', 'Ô': 'O', 'Ú': 'U',
-          'Ü': 'U', 'Ñ': 'N', '£': 'L', '§': 'S', '°': 'o'
-        };
-        return replacements[match] || match;
-      });
+  for (const e of elements) {
+    e.text = cleanMarkdown(e.text);
   }
 
   return elements;
 }
 
-// Helper function to determine indentation based on element type
+function cleanMarkdown(text: string) {
+  const map: Record<string, string> = {
+    ç: 'c', ã: 'a', õ: 'o', á: 'a', à: 'a', â: 'a', é: 'e', ê: 'e', í: 'i',
+    ó: 'o', ô: 'o', ú: 'u', ü: 'u', ñ: 'n',
+    Ç: 'C', Ã: 'A', Õ: 'O', Á: 'A', À: 'A', Â: 'A',
+    É: 'E', Ê: 'E', Í: 'I', Ó: 'O', Ô: 'O', Ú: 'U', Ü: 'U', Ñ: 'N',
+  };
+
+  return text
+    .replace(/→/g, '->')
+    .replace(/_/g, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/[^\x00-\x7F]/g, m => map[m] ?? '');
+}
+
 function getIndentForType(type: string): number {
-  switch (type) {
-    case 'header1':
-      return 50;
-    case 'header2':
-      return 50;
-    case 'header3':
-      return 55;
-    case 'header4':
-    case 'header5':
-    case 'header6':
-      return 60;
-    case 'list_item':
-      return 70;
-    default:
-      return 50;
-  }
+  return {
+    header1: 50,
+    header2: 50,
+    header3: 55,
+    header4: 60,
+    header5: 60,
+    header6: 60,
+    list_item: 70,
+  }[type] ?? 50;
 }
