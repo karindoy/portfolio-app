@@ -1,6 +1,6 @@
 # Suellen Karin Oliveira Doy
 
-**Email**: doykarin@gmail.com  
+**Email:** [doykarin@gmail.com](mailto:doykarin@gmail.com)
 **Phone**: +55 (11) 95227-3065  
 **LinkedIn**: [linkedin.com/in/doykarin](https://linkedin.com/in/doykarin)  
 **GitHub**: [github.com/karindoy](https://github.com/karindoy)  
@@ -8,13 +8,24 @@
 
 ## Summary
 
-Proactive and pragmatic Software Engineer with 7+ years of experience in **Java**, **Kotlin**, and **Spring**, specializing in scalable, high-performance systems. Proven ability to deliver solutions aligned with business goals, not just robust code. Experienced in **PostgreSQL**, **NoSQL**, **Redis** with **financial services**.
+Software Engineer with 7+ years of experience building scalable, resilient backend systems using **Java**, **Kotlin**, **Spring Boot**, **Microservices**, and **AWS**. Strong background in financial services, distributed systems, and high-throughput architectures. Hands-on experience with **React**, **Node.js**, **TypeScript**, and **modern DevOps pipelines**. Focused on delivering reliable systems aligned with real business needs, backed by solid testing and data consistency practices.
 
 ## Skills
 
-- Kotlin, Java, SQL, JavaScript, Spring Boot, Javalin, JUnit, MockK, Mockito
-- SQL Server, PostgreSQL, MongoDB, Redis (RDBMS and NoSQL)
-- AWS (EC2, RDS, S3, SQS, CloudWatch), Docker, Git, REST APIs, Microservices, MVC, Scrum, Events, Integration
+- Languages: Java, Kotlin, JavaScript, TypeScript, Node.js, SQL, NoSQL, HTML5, CSS3
+- Backend & Architecture: Spring Boot, Spring Cloud, Spring MVC, Spring Security, JPA/Hibernate,
+  REST APIs, Microservices, Clean Architecture, Domain-Driven Design (DDD),
+  API Gateway, J2EE, Server-Side Rendering, Event-Driven Architecture,
+  Message-Based Integrations (SQS, Kafka-style patterns), System Design, Distributed Systems, Design Patterns, OOP, Cloud-Native Services, RESTful Services, J2EE, API Gateway, Distributed Systems, Cloud Architecture, System Design, Javalin, Events messages, API Integration
+- Frontend: React, Angular, Next.js, Responsive UI, State Management, Hooks
+- Cloud & DevOps: AWS (EC2, RDS, S3, SQS, IAM, CloudWatch), Azure, GCP,
+  Docker, Kubernetes, CI/CD pipelines, GitHub Actions, Jenkins, GitLab CI,
+  Linux, Git, Version Control, Secrets Management
+- Databases: PostgreSQL, SQL Server, MySQL, MongoDB, Redis (Cache + Pub/Sub)
+- Testing: JUnit, MockK, Mockito, Unit Testing, Integration Testing
+- Tools: Webpack, NPM, Linux
+- Soft Skills: Clear communication, ownership, mentoring, cross-team collaboratio
+- Methodologies: Agile, Scrum, Kanban, Continuous Delivery
 
 ## Experience
 
